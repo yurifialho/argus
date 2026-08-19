@@ -1,0 +1,70 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-prova_python}
+      MYSQL_USER: ${MYSQL_USER:-prova_app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-prova_app_password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER:-prova_app}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-prova_app_password}
+      DB_NAME: ${MYSQL_DATABASE:-prova_python}
+      JWT_SECRET: ${JWT_SECRET:-troque-este-segredo}
+      TEACHER_USERNAME: ${TEACHER_USERNAME:-professor}
+      TEACHER_PASSWORD: ${TEACHER_PASSWORD:-troque-esta-senha}
+      PORT: 4000
+    ports:
+      - "4000:4000"
+
+  # Produção: build otimizado do React servido pelo Nginx, com /api
+  # encaminhado para o backend. Uso: docker compose up --build
+  web:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+  # Desenvolvimento: Vite dev server com hot-reload, falando direto com o
+  # backend pela porta publicada no host. Uso: docker compose --profile dev up dev
+  dev:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    environment:
+      VITE_API_URL: http://localhost:4000/api
+    volumes:
+      - ./frontend:/app
+      - frontend_dev_node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    profiles:
+      - dev
+
+volumes:
+  mysql_data:
+  frontend_dev_node_modules:
