@@ -1,11 +1,8 @@
-# Prova Prática de Python
+# Argus (Prova Prática de Python)
 
-Sistema para aplicar provas práticas de Python: o aluno escreve o código
-**dentro do próprio navegador** (só digitando — colar está desabilitado) e o
-sistema **executa o Python de verdade** (via [Pyodide](https://pyodide.org),
-Python compilado para WebAssembly) para conferir se a resposta está correta.
-Questões e resultados ficam salvos em **MySQL**, e o painel do professor é
-protegido por **usuário e senha**.
+Sistema para aplicar provas práticas de Python: o aluno escreve o código **dentro do próprio navegador** (só digitando — colar está desabilitado) e o sistema **executa o Python de verdade** (via [Pyodide](https://pyodide.org), Python compilado para WebAssembly) para conferir se a resposta está correta. Questões e resultados ficam salvos em **MySQL**, e com o painel do professorp rotegido por **usuário e senha**. 
+
+Curiosidade: Na mitologia grega, Argus é o gigante de cem olhos que tudo vê e nunca dorme. É a analogia perfeita para um corretor automático que não deixa passar nenhum erro de sintaxe ou falha lógica de modo a avaliar os alunos.
 
 ## Arquitetura
 
@@ -15,9 +12,7 @@ backend/    -> API Node/Express (autenticação, questões, resultados)
 mysql       -> banco de dados (via imagem oficial no docker-compose)
 ```
 
-O frontend nunca fala com o MySQL diretamente — tudo passa pela API do
-backend, que valida o login do professor (JWT) antes de permitir criar,
-editar ou remover questões e ver resultados.
+O frontend nunca fala com o MySQL diretamente — tudo passa pela API do backend, que valida o login do professor (JWT) antes de permitir criar, editar ou remover questões e ver resultados.
 
 ## Rodando com Docker (recomendado)
 
@@ -59,10 +54,7 @@ docker compose down -v       # remove também o volume do MySQL (apaga tudo)
 docker compose --profile dev up dev
 ```
 
-Isso sobe `mysql` + `backend` normalmente e o frontend em modo Vite dev
-server (com recarregamento automático) em
-[http://localhost:5173](http://localhost:5173), falando com o backend em
-`http://localhost:4000`.
+Isso sobe `mysql` + `backend` normalmente e o frontend em modo Vite dev server (com recarregamento automático) em [http://localhost:5173](http://localhost:5173), falando com o backend em `http://localhost:4000`.
 
 > A internet ainda é necessária **no navegador de quem acessa a aplicação**
 > (aluno/professor), pois o Pyodide é baixado de um CDN pelo navegador na
@@ -70,18 +62,14 @@ server (com recarregamento automático) em
 
 ## Login do professor
 
-A tela inicial tem duas opções: "Sou aluno" (não exige login) e "Sou
-professor" (pede usuário e senha). As credenciais padrão, se você não mudar
-o `.env`, são:
+A tela inicial tem duas opções: "Sou aluno" (não exige login) e "Sou professor" (pede usuário e senha). As credenciais padrão, se você não mudar o `.env`, são:
 
 ```
 usuário: professor
 senha:   troque-esta-senha
 ```
 
-**Troque isso antes de usar de verdade.** Como a criação do usuário só
-acontece se a tabela `teachers` estiver vazia, para trocar a senha depois de
-já ter subido o projeto uma vez, você tem duas opções:
+**Troque isso antes de usar de verdade.** Como a criação do usuário só acontece se a tabela `teachers` estiver vazia, para trocar a senha depois de já ter subido o projeto uma vez, você tem duas opções:
 - apagar o volume do MySQL (`docker compose down -v`) e subir de novo com as
   novas variáveis no `.env`; ou
 - conectar direto no MySQL e fazer o update manualmente (ver seção abaixo).
@@ -125,21 +113,15 @@ VITE_API_URL=http://localhost:4000/api npm run dev
 
 Cada questão tem um ou mais **casos de teste**. Cada caso pode:
 
-- criar arquivos virtuais no ambiente (ex: `teste.txt` com um conteúdo
-  específico) antes de rodar o código do aluno;
-- fornecer uma lista de valores que serão devolvidos por `input()`, na
-  ordem chamada;
-- definir **assertions**: regras que a saída (tudo que o código imprimiu)
-  precisa satisfazer. Tipos suportados:
+- criar arquivos virtuais no ambiente (ex: `teste.txt` com um conteúdo específico) antes de rodar o código do aluno;
+- fornecer uma lista de valores que serão devolvidos por `input()`, na ordem chamada;
+- definir **assertions**: regras que a saída (tudo que o código imprimiu) precisa satisfazer. Tipos suportados:
   - `contains`: a saída precisa conter esse texto;
   - `exact`: a saída precisa ser exatamente igual (ignorando espaços nas
     pontas);
   - `regex`: a saída precisa casar com essa expressão regular.
 
-O sistema roda o **mesmo código do aluno** contra todos os casos de teste de
-uma questão — isso ajuda a evitar que o aluno "chute" uma resposta fixa (ex:
-`print("terceira linha")` sem realmente ler o arquivo). Por isso as questões
-de exemplo já vêm com 2 casos usando arquivos diferentes.
+O sistema roda o **mesmo código do aluno** contra todos os casos de teste de uma questão — isso ajuda a evitar que o aluno "chute" uma resposta fixa (ex: `print("terceira linha")` sem realmente ler o arquivo). Por isso as questões de exemplo já vêm com 2 casos usando arquivos diferentes.
 
 Exemplo (a questão de ler a 3ª linha de um arquivo):
 
@@ -160,40 +142,21 @@ Exemplo (a questão de ler a 3ª linha de um arquivo):
 
 ## Sobre o bloqueio de colar
 
-No editor de código do aluno, colar (`Ctrl+V`, clique direito > colar, ou
-arrastar texto/arquivo para dentro do editor) é bloqueado — o aluno só
-consegue digitar. Isso é feito interceptando os eventos `paste` e `drop` do
-navegador. É uma trava razoável para desincentivar copiar e colar de fora,
-mas, como qualquer trava só no front-end, um usuário com conhecimento técnico
-avançado (ex: editando o DOM via ferramentas de desenvolvedor do navegador)
-poderia contorná-la — não trate isso como um mecanismo de prova de fraude à
-prova de tudo, e sim como um obstáculo prático para o caso comum.
+No editor de código do aluno, colar (`Ctrl+V`, clique direito > colar, ou arrastar texto/arquivo para dentro do editor) é bloqueado — o aluno só consegue digitar. Isso é feito interceptando os eventos `paste` e `drop` do navegador. É uma trava razoável para desincentivar copiar e colar de fora, mas, como qualquer trava só no front-end, um usuário com conhecimento técnico avançado (ex: editando o DOM via ferramentas de desenvolvedor do navegador) poderia contorná-la — não trate isso como um mecanismo de prova de fraude à prova de tudo, e sim como um obstáculo prático para o caso comum.
 
 ## Painel do professor
 
 Depois de logado, o professor pode:
 
-- **Questões**: criar, editar, reordenar e remover questões. Os campos
-  título/enunciado/código inicial têm formulário próprio; os *casos de
-  teste* são editados como JSON (copie o exemplo que aparece como
-  placeholder para começar rápido).
-- **Importar/Exportar**: baixar o banco de questões atual como `.json`
-  (backup ou para compartilhar com outro professor) e importar um `.json`
-  de questões (substitui o banco atual no MySQL).
-- **Resultados**: lista de tentativas registradas pelos alunos, com nome,
-  nota e data, vindas diretamente do MySQL.
+- **Questões**: criar, editar, reordenar e remover questões. Os campos título/enunciado/código inicial têm formulário próprio; os *casos de teste* são editados como JSON (copie o exemplo que aparece como placeholder para começar rápido).
+- **Importar/Exportar**: baixar o banco de questões atual como `.json` (backup ou para compartilhar com outro professor) e importar um `.json` de questões (substitui o banco atual no MySQL).
+- **Resultados**: lista de tentativas registradas pelos alunos, com nome, nota e data, vindas diretamente do MySQL.
 
 ## Limitações importantes
 
-- A verificação compara a **saída impressa** do código (stdout/stderr), não
-  o código-fonte em si. Isso é intencional (permite múltiplas soluções
-  corretas), mas significa que um código que produza a saída certa "por
-  acaso" também passaria — por isso é importante usar mais de um caso de
-  teste por questão, como nos exemplos.
-- `input()` é suportado via uma fila de valores pré-definidos pelo
-  professor (`stdinInputs`), não interação manual durante a correção.
-- Não há confirmação de e-mail nem recuperação de senha para o professor;
-  é um login simples (usuário/senha) pensado para uso interno/sala de aula.
+- A verificação compara a **saída impressa** do código (stdout/stderr), não o código-fonte em si. Isso é intencional (permite múltiplas soluções corretas), mas significa que um código que produza a saída certa "por acaso" também passaria — por isso é importante usar mais de um caso de teste por questão, como nos exemplos.
+- `input()` é suportado via uma fila de valores pré-definidos pelo professor (`stdinInputs`), não interação manual durante a correção.
+- Não há confirmação de e-mail nem recuperação de senha para o professor; é um login simples (usuário/senha) pensado para uso interno/sala de aula.
 
 ## Estrutura do projeto
 
