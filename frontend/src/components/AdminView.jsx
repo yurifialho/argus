@@ -295,6 +295,7 @@ export default function AdminView({ questions, onQuestionsReload, teacherName, o
           <table className="results-table">
             <thead>
               <tr>
+                <th>Matrícula</th>
                 <th>Aluno</th>
                 <th>Nota</th>
                 <th>Data</th>
@@ -303,6 +304,7 @@ export default function AdminView({ questions, onQuestionsReload, teacherName, o
             <tbody>
               {results.map((r, i) => (
                 <tr key={i}>
+                  <td>{r.studentMatricula}</td>
                   <td>{r.studentName}</td>
                   <td>{r.score} / {r.total}</td>
                   <td>{new Date(r.finishedAt).toLocaleString('pt-BR')}</td>

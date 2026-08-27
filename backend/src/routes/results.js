@@ -6,15 +6,15 @@ const router = Router()
 
 // Público: o aluno envia o resultado ao finalizar a prova.
 router.post('/', async (req, res) => {
-  const { studentName, score, total, detail } = req.body || {}
+  const {studentMatricula, studentName, score, total, detail } = req.body || {}
 
   if (!studentName || typeof score !== 'number' || typeof total !== 'number') {
     return res.status(400).json({ error: 'Dados de resultado incompletos.' })
   }
 
   await pool.query(
-    'INSERT INTO results (student_name, score, total, detail) VALUES (?, ?, ?, ?)',
-    [studentName, score, total, JSON.stringify(detail || [])]
+    'INSERT INTO results (student_matricula, student_name, score, total, detail) VALUES (?, ?, ?, ?, ?)',
+    [studentMatricula, studentName, score, total, JSON.stringify(detail || [])]
   )
 
   res.status(201).json({ ok: true })
@@ -25,6 +25,7 @@ router.get('/', requireAuth, async (req, res) => {
   const [rows] = await pool.query('SELECT * FROM results ORDER BY finished_at DESC')
   res.json(
     rows.map((r) => ({
+      studentMatricula: r.student_matricula,
       studentName: r.student_name,
       score: r.score,
       total: r.total,

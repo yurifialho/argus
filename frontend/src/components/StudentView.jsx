@@ -7,6 +7,7 @@ import { submitResult } from '../utils/api.js'
 
 export default function StudentView({ questions, onExit }) {
   const [stage, setStage] = useState('intro') // intro | exam | summary
+  const [studentMatricula, setStudentMatricula] = useState('')
   const [studentName, setStudentName] = useState('')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState({}) // { [questionId]: { code, checked, allPass, cases: [...] } }
@@ -19,6 +20,12 @@ export default function StudentView({ questions, onExit }) {
   const currentAnswer = answers[question?.id]
 
   const progressLabel = `Questão ${currentIndex + 1} de ${questions.length}`
+
+  function validateStudent() {
+    return studentName.trim() != "" && 
+           studentMatricula.trim() != "" &&
+           !isNaN(Number(studentMatricula));    
+  }
 
   function updateCode(code) {
     setAnswers((prev) => ({
@@ -138,9 +145,17 @@ export default function StudentView({ questions, onExit }) {
         <span className="eyebrow">Prova prática · Python</span>
         <h2>Identifique-se para começar</h2>
         <p className="muted">
-          Você vai resolver {questions.length} questão(ões) escrevendo código Python real, executado
-          diretamente no navegador. Cada questão pode ser testada quantas vezes quiser antes de avançar.
+          Você vai resolver {questions.length} questão(ões) escrevendo código em Python. Cada questão pode ser testada quantas vezes quiser antes de avançar dentro do tempo disponível para a execução da prova.
         </p>
+        <label className="field">
+          <span>Matrícula{isNaN(Number(studentMatricula))}</span>
+          <input
+            type="text"
+            value={studentMatricula}
+            onChange={(e) => setStudentMatricula(e.target.value)}
+            placeholder="Digite sua matrícula"
+          />
+        </label>
         <label className="field">
           <span>Nome do aluno</span>
           <input
@@ -154,7 +169,7 @@ export default function StudentView({ questions, onExit }) {
           <button className="btn btn--ghost" onClick={onExit}>Voltar</button>
           <button
             className="btn btn--primary"
-            disabled={!studentName.trim()}
+            disabled={!validateStudent()}
             onClick={() => setStage('exam')}
           >
             Iniciar prova

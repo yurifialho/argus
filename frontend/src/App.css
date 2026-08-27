@@ -9,6 +9,9 @@
   --green: #6fcf97;
   --rust: #c0533e;
   --gold: #c9a227;
+  --purple-0: #b858f2;
+  --purple: #7d2dc8;
+  --purple-2: #190643;
   --font-display: 'Source Serif 4', Georgia, serif;
   --font-ui: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -23,15 +26,16 @@ html, body, #root {
 
 body {
   margin: 0;
-  background: #ece6d8;
+  background: #000000;
   background-image:
     radial-gradient(circle at 15% 10%, rgba(201, 162, 39, 0.07), transparent 40%),
     radial-gradient(circle at 85% 90%, rgba(22, 33, 59, 0.06), transparent 45%);
-  color: var(--ink);
+  color: var(--purple-0);
   font-family: var(--font-ui);
 }
 
 .app-shell {
+  position: relative;
   max-width: 1180px;
   margin: 0 auto;
   padding: 28px 24px 60px;
@@ -55,12 +59,16 @@ body {
 .app-header__mark {
   font-family: var(--font-mono);
   font-weight: 700;
-  background: var(--navy);
-  color: var(--green);
+  /*background: var(--navy); */
+  color: var(--purple);
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 18px;
   letter-spacing: 0.5px;
+}
+
+.app-header__mark img {
+  width: 5em;
 }
 
 .app-header h1 {
@@ -73,14 +81,16 @@ body {
 .app-header p {
   margin: 2px 0 0;
   font-size: 13px;
-  color: var(--ink-soft);
+  color: var(--purple);
 }
 
 .app-footer {
   text-align: center;
   font-size: 12px;
-  color: var(--ink-soft);
-  margin-top: 40px;
+  color: var(--purple);
+  bottom: 0px;
+  position: absolute;
+  width: 100%;
 }
 
 /* ---------- Home ---------- */
@@ -137,6 +147,7 @@ body {
 
 .paper-card {
   background: var(--paper);
+  color: #000000;
   border: 1px solid var(--paper-line);
   border-radius: var(--radius);
   padding: 28px;
@@ -164,6 +175,7 @@ body {
   color: var(--ink-soft);
 }
 .field input[type="text"],
+.field input[type="password"],
 .field textarea {
   width: 100%;
   border: 1px solid var(--paper-line);
@@ -188,13 +200,13 @@ body {
   font-size: 14px;
   border-radius: 8px;
   padding: 10px 18px;
-  border: 1px solid transparent;
+  border: 1px solid transparent ;
   cursor: pointer;
 }
 .btn--primary { background: var(--navy); color: #fff; }
 .btn--primary:hover { background: var(--navy-2); }
 .btn--primary:disabled { opacity: 0.4; cursor: not-allowed; }
-.btn--ghost { background: transparent; border-color: var(--paper-line); color: var(--ink); }
+.btn--ghost { background: transparent; border-color: var(--purple-2); color: var(--purple); }
 .btn--run { background: var(--green); color: #0c2417; }
 .btn--run:disabled { opacity: 0.6; cursor: progress; }
 

@@ -3,6 +3,7 @@ import StudentView from './components/StudentView.jsx'
 import AdminView from './components/AdminView.jsx'
 import AdminLogin from './components/AdminLogin.jsx'
 import { fetchQuestions, getToken, getTeacherName, clearSession } from './utils/api.js'
+import logo from './asserts/argus_logo_wb.png'
 
 export default function App() {
   const [mode, setMode] = useState('home') // home | student | admin
@@ -45,10 +46,12 @@ export default function App() {
     <div className="app-shell">
       <header className="app-header">
         <div className="app-header__brand">
-          <span className="app-header__mark">Py</span>
+          <span className="app-header__mark">
+            <img src={logo} alt='Logo' />
+          </span>
           <div>
-            <h1>Prova Prática de Python</h1>
-            <p>Código real, verificado na hora, direto no navegador.</p>
+            <h1>Argus</h1>
+            <p>Sistema de Avaliação Prática de Python</p>
           </div>
         </div>
         {mode !== 'home' && (
@@ -56,20 +59,20 @@ export default function App() {
             Início
           </button>
         )}
+        {mode === 'home' && (
+          <button className="btn btn--ghost" onClick={() => setMode('admin')}>
+              Gerenciar
+          </button>
+        )}
       </header>
 
       <main className="app-main">
         {mode === 'home' && (
           <div className="home-grid">
-            <button className="role-card" onClick={() => setMode('student')}>
+            <button className="role-card role-card--dark" onClick={() => setMode('student')}>
               <span className="eyebrow">Sou aluno</span>
               <h2>Fazer a prova</h2>
-              <p>Resolva as questões escrevendo código Python de verdade.</p>
-            </button>
-            <button className="role-card role-card--dark" onClick={() => setMode('admin')}>
-              <span className="eyebrow">Sou professor</span>
-              <h2>Gerenciar questões</h2>
-              <p>Cadastre, edite, importe/exporte questões e veja resultados.</p>
+              <p>Resolva as questões.</p>
             </button>
           </div>
         )}
@@ -108,7 +111,7 @@ export default function App() {
       </main>
 
       <footer className="app-footer">
-        Execução Python real via Pyodide (WebAssembly) no navegador · dados salvos em MySQL.
+        Yuri Fialho - 2026 - Copyright
       </footer>
     </div>
   )
