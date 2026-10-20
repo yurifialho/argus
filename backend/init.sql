@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS questions (
 
 CREATE TABLE IF NOT EXISTS results (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  student_matricaul INT NOT NULL,
+  student_matricula INT NOT NULL,
   student_name VARCHAR(255) NOT NULL,
   score INT NOT NULL,
   total INT NOT NULL,

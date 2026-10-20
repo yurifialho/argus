@@ -82,6 +82,7 @@ export default function StudentView({ questions, onExit }) {
     setSubmitting(true)
     try {
       await submitResult({
+        studentMatricula: studentMatricula,
         studentName: studentName.trim() || 'Aluno sem nome',
         score,
         total: questions.length,
